@@ -445,21 +445,274 @@ print(y) # [0.31682708, 0.69627909]
 
 ##### MNIST 데이터 셋
 
-- MINST 
+- MNIST 
 
   - 손글씨 숫자 이미지 집합으로 기계학습 분야에선 유명..!
   - 0부터 9까지의 숫자 이미지로 구성됨
     - 훈련 이미지 : 60k장
     - 시험 이미지 : 10k장
-
   - 특징 
-
+  
     - gray-level 이미지
-
-    - size : 28 x 28
-
+  - size : 28 x 28
     - 픽셀 : 0~255
+  - 각 이미지에 실제 숫자가 레이블로 붙어 있음
 
-    - 각 이미지에 실제 숫자가 레이블로 붙어 있음
+- MNIST 데이터셋 파일을 다운 받아 dataset디렉토리에 저장
 
+  | 파일                       | 목적                                                         |
+  | -------------------------- | ------------------------------------------------------------ |
+  | train-image-idx3-ubyte.gx  | 학습 셋 이미지 - 55000개의 트레이닝 이미지, 5000개의 검증 이미지 |
+  | train-labels-idx1-ubyte.gz | 이미지와 매칭되는 학습 셋 레이블                             |
+  | t10k-images-idx3-ubyte.gz  | 테스트 셋 이미지- 10000개의 이미지                           |
+  | t10k-labels-idx1-ubyte.gz  | 이미지와 매칭되는 테스트 셋 레이블                           |
+
+##### MNIST 데이터셋 이미지 가져오기
+
+- ![image-20220105002018229](C:\Users\a9681\AppData\Roaming\Typora\typora-user-images\image-20220105002018229.png)
+  - `sys.path` 
+    - 파이썬 모듈이 저장되어 있는 위치를 반환
+    - System이 해당 경로들을 scope하고 있다는 의미 => 해당 위치에 있는 모든 모듈을 경로 설정없이 바로 불러올 수 있음!
+  - `os.pardir` 
+    - 부모 디렉터리 경로
+
+##### 코드 설명
+
+- `mnist.py` 
+  - `load_mnist()` : MNIST 데이터셋의 이미지를 **numpy**배열로 변환해주는 함수 
+
+##### IDX file format
+
+- MNIST 데이터셋 확장자
+  - .idx1-ubyte : 라벨링 파일 (0-9)
+  - .idx3-ubyte : 이미지 파일 (0-255)
+
+##### load_mnist
+
+- ```python
+  def load_mnist(normalize=True, flatten=True, one_hot_label=False):
+      """MNIST 데이터셋 읽기
+  
+      Parameters
+      ----------
+      normalize : 이미지의 픽셀 값을 0.0~1.0 사이의 값으로 정규화할지 정한다.
+      one_hot_label :
+          one_hot_label이 True면, 레이블을 원-핫(one-hot) 배열로 돌려준다.
+          one-hot 배열은 예를 들어 [0,0,1,0,0,0,0,0,0,0]처럼 한 원소만 1인 배열이다.
+      flatten : 입력 이미지를 1차원 배열로 만들지를 정한다.
+  
+      Returns
+      ------
+      (훈련 이미지, 훈련 레이블), (시험 이미지, 시험 레이블)
+      """
+      if not os.path.exists(save_file):
+          init_mnist()
+  
+      with open(save_file, 'rb') as f:
+          dataset = pickle.load(f)
+  
+      if normalize:
+          for key in ('train_img', 'test_img'):
+              dataset[key] = dataset[key].astype(np.float32)
+              dataset[key] /= 255.0
+  
+      if one_hot_label:
+          dataset['train_label'] = _change_one_hot_label(dataset['train_label'])
+          dataset['test_label'] = _change_one_hot_label(dataset['test_label'])
+  
+      if not flatten:
+           for key in ('train_img', 'test_img'):
+              dataset[key] = dataset[key].reshape(-1, 1, 28, 28)
+  
+      return (dataset['train_img'], dataset['train_label']), (dataset['test_img'], dataset['test_label'])
+  
+  if __name__ == '__main__':
+      init_mnist()
+  
+  ```
+
+  - load_mnist는 함수 객체임
+
+  - `load_mnist(normalize=True, flatten=True, one_hot_label=False):`
+
+    - load_mnist() 함수는 위와 같은 default parameter를 가지고 있음
+
+  - `normalize`
+
+    - 입력 이미지의 pixel value를 0.0~1.0 사이 값으로 정규화
+      - normalize == False이면 데이터 원형 그대로 0~255 사이 값 유지
+
+  - `flatten` 
+
+    - 입력 이미지를 평탄하게(1차원 배열로) 만듦
+      - flatten==False이면 데이터 원형 그대로 1x28x28의 3D배열
+      - flatten==True이면 배열을 일자로 늘려서 784개의 원소로 이루어진 1D배열
+
+  - `one_hot_label`
+
+    - 레이블을 원-핫 인코딩형태로 저장(라벨링 데이터의 저장 형식을 설정)
+      - one_hot_label==False이면 데이터 원형 그대로 라벨링 값을 정수 형태로 저장
+      - one_hot_label==True이면
+        - 원래 라벨링이 '7' : [0,0,0,0,0,0,0,1,0,0]
+
+    :question:원-핫 인코딩 (one-hot encoding)
+
+    - 한 놈만 핫하다(= 한 놈만 정답이다)
+    - 정답을 뜻하는 원소만 1, 나머진 모두 0
+
+- 직렬화 (serialization)
+
+  - 자료구조(객체)를 파일로 저장하기 위해 변환하는 것
+  - 객체를 이진(binary)이나 텍스트 포맷으로 변환( 형식 변환 )
+    - 구조화된 데이터(ex. 인메모리 구조체)를 저장하거나 전송하기 위한 형식으로 변환하기 위한 개념
+  - 변환된 데이터는 나중에 동일 시스템(os)이나 타 시스템에서 재구성해 객체를 복제할 수 있음
+
+- pickle 모듈
+
+  - 파이썬 언어로된 가장 기본 **직렬화 컨버터**모듈
+
+    - 서로 다른 코딩언어/자료형 간 객체를 직렬화 시키는 도구
+
+  - 파이썬 언어로된 버퍼 프로토콜이기도 함
+
+  - 일시적으로 존재하는 객체는 pickle 모듈을 사용할 수 없음
+
+    ex) function, method, class, pip ...
+
+  - `pickle.load(<직렬화 된 객체>)` : 직렬화된 객체를 복원하는 메소드
+
+##### MNIST 이미지 출력하기
+
+- ```python
+  import numpy as np
+  import sys, os
+  sys.path.append(os.pardir) # 부모 디렉토리의 모든 파일 위치 추가
+  
+  from dataset.mnist import load_mnist # MNIST 데이터 읽어서 numpy.ndarray 객체로 변환시키는 모듈
+  
+  from PIL import Image # PIL : Python Image Library
+  
+  def img_show(img):
+  	pil_img = Image.fromarray(np.unit8(img))
+  	pil_img.show()
+  
+  (x_train, t_train), (x_test, t_test) = load_mnist(flatten=True, normalize=False) # 데이터 읽어옴 (IDX format -> numpy.ndarray 객체)
+  
+  x_train # 60000장의 이미지를 28x28로 평활화 시킨 것
+  t_train # 각 원소는 레이블을 나타냄
+  
+  img = img.reshape(28,28)
+  img_show(img) # 이미지 출력
+  ```
+
+  - 주의할 점
+    - flatten=True로 설정해서 이미지 객체를 1차원 넘파이로 불러왔을 때 이미지로 출력하려면 다시 원래 형태인 28x28로 변형해야함
+      - `np.reshape( , )`
+    - OpenCV 이외의 PIL모듈로 이미지 출력할 땐 넘파이 객체를 PIL용 데이터 객체로 변환해야 함
+      - `Image.fromarray()`
+
+##### MNIST 숫자 분류 신경망 구조
+
+- 입력층 
+
+  - 뉴런 784개 ( 28 x 28 사이즈 이미지 => 784 x 1 배열로 평활화)
+
+- 은닉층 2개 - 저자가 임의로 정함
+
+  - 첫번째 layer : 뉴런 50개
+  - 두번째 layer : 뉴런 100개
+
+- 출력층 
+
+  - 뉴런 10개 (0-9)
+
+- <img src="C:\Users\a9681\AppData\Roaming\Typora\typora-user-images\image-20220105011821029.png" alt="image-20220105011821029" style="zoom:80%;" />
+
+- MNIST 데이터셋을 활용한 추론을 수행하는 신경망 구현
+
+  ```python
+  import numpy as np
+  import pickle
+  import sys, os
+  sys.path.append(os.pardir) # 부모 디렉토리의 모든 파일 위치 추가
+  
+  from dataset.mnist import load_mnist # MNIST 데이터 읽어서 numpy.ndarray 객체로 변환시키는 모듈
+  
+  #(1) MNIST 데이터를 np.ndarray 객체로 불러오기
+  def get_data():
+      (x_train, t_train), (x_test, t_test) = load_mnist(normalize=True, flatten=True, one_hot_label=False)
+      return x_test, t_test 
+  
+  #(2) 사전 학습된 가중치 파일 불러오기
+  def init_network():
+      with open('sample_weight.pkl',mode='rb') as f:
+          network = pickel.load(f)
+         
+      return network # dictionary 형태의 객체 
+  
+  #(3) 추론
+  def predict(network, x):
+      W1, W2, W3 = network['W1'].network['W2'].network['W3'] #weight 가중치
+      b1, b2, b3 = network['b1'].network['b2'].network['b3'] #bias 편향
       
+      a1 = np.dot(x, W1) + b1
+      z1 = sigmoid(a1)
+      a2 = np.dot(z1,W2) + b2
+      z2 = sigmoid(a2)
+      a3 = np.dot(z2, W3) + b3
+      y = softmax(a3)
+      
+      return y
+  
+  # 활성화 함수 정의
+  def sigmoid(x):
+      return 1 / (1+np.exp(-x))
+  
+  def softmax(x):
+      if x.ndim == 2: 
+          x = x.T # 전치
+          x = x - np.max(x, axis =0) # 각 열의 최댓값을 원소마다 빼서 지수함수의 스케일 줄임
+          y = np.exp(x) / np.sum(np.exp(x), axis = 0) # softmax함수
+          
+  # main()
+  x, label = get_data()
+  network = init_network() # 사전 학습된 가중치 불러오기
+  
+  accuracy_cnt = 0 # 정확하게 예측한 것 카운트
+  
+  for i in range(len(x)):
+      y = predict(network, x[i]) # x[i] : 평활화된 i번째 이미지
+      print("확률 = ", y) #출력된 클래스별 확률
+      print("\n")
+      max_idx = np.argmax(y) # 값이 가장 큰 원소의 인덱스 
+      
+      if max_idx == label[i]:
+          accurac_cnt += 1
+  ```
+
+  - 출력된 확률값 다루기
+
+    - 확률이 높은 클래스 선택!
+
+  - 레이블 == 신경망 예측 클래스
+
+    => accuracy_cnt 증가
+
+    ```python
+    print("Accuracy: " + str(float(accuracy_cnt) / len(x))) # 정확도 계산
+    ```
+
+    Accuracy : 0.9352
+
+    
+
+##### 정규화 & 전처리
+
+- 정규화 (Normalization) : 데이터를 특정 범위로 변환하는 처리
+- 전처리 (Pre-processing) : 데이터에 입력 전 특정 변환을 가하는 것
+- 데이터 전처리로 정규화 시키는 장점?
+  - 식별 능력 개선
+  - 학습 속도 향상
+  - 해석 용이
+- 현업에서는 데이터 전체의 분포를 고려해 전처리를 가함
+
