@@ -24,38 +24,37 @@
 
 ##### 퍼셉트론 복습
 
-![img](http://mathurl.com/render.cgi?y%20%3D%20%5Cbegin%7Bcases%7D0%28b+%20w_%7B1%7Dx_%7B1%7D%20+%20w_%7B2%7Dx_%7B2%7D%5Cleq0%29%0A%20%26%20%20%20%5C%5C%201%28%20b%20+%20w_%7B1%7Dx_%7B1%7D%20+%20w%7B2%7Dx%7B2%7D%5Cgeq0%29%0A%20%26%20%20%0A%5Cend%7Bcases%7D%0A%5Cnocache)
+<img src="C:\Users\a9681\AppData\Roaming\Typora\typora-user-images\image-20211228011020885.png" alt="image-20211228011020885" style="zoom:50%;" />
 
 - b : **편향**(뉴런이 얼마나 쉽게 활성화되느냐를 제어)
 - w1,w2 : 각 신호의 가중치 (신호의 영향력을 제어)
 
-<img src="C:\Users\a9681\AppData\Roaming\Typora\typora-user-images\image-20211228011020885.png" alt="image-20211228011020885" style="zoom:50%;" />
-
 - h(x)함수는 입력이 0을 넘으면 1을 돌려주고 그렇지 않으면 0을 돌려줌
 
-- 활성화 함수의 등장
+- 활성화 함수 
 
-  - 활성화 함수 
-    - 입력 신호의 총합을 출력 신호로 변환하는 함수
-    - 입력 신호의 총합이 활성화를 일으키는지를 정하는 함수
+  - 입력 신호의 총합을 출력 신호로 변환하는 함수
+  - 입력 신호의 총합이 활성화를 일으키는지를 정하는 함수
+
   - <img src="C:\Users\a9681\AppData\Roaming\Typora\typora-user-images\image-20211228011410419.png" alt="image-20211228011410419" style="zoom:67%;" />
     - 가중치가 곱해진 입력 신호의 총합을 계산하고, 그 합을 활성화 함수에 입력해 결과를 내는 2단계로 처리
     - <img src="C:\Users\a9681\AppData\Roaming\Typora\typora-user-images\image-20211228011644350.png" alt="image-20211228011644350" style="zoom: 43%;" />
       - 기존 뉴런의 원을 키워 그 안에 활성화 함수의 처리 과정을 그려 넣음
   - 단순 퍼셉트론 : 단층 네트워크에서 계단 함수(임계값을 경계로 출력이 바뀌는 함수)를 활성화 함수로 사용한 모델
   - 다층 퍼셉트론 : 신경망(여러 층으로 구성되고 시그모이드 함수 등의 매끈한 활성화 함수를 사용하는 네트워크)
-  
+
 
 ------
 
-#### 활성화 함수
+#### 활성화 함수(Activation function)
 
-##### 시그모이드 함수 
+##### 시그모이드 함수(sigmoid function)
 
 - 신경망에서 자주 이용하는 활성화 함수
 - <img src="C:\Users\a9681\AppData\Roaming\Typora\typora-user-images\image-20211231153423938.png" alt="image-20211231153423938" style="zoom:70%;" />
+- 
 
-##### 계단 함수 구현하기
+##### 계단 함수(Heaviside function) 구현하기
 
 - ```python
   def step_function (x): # x라는 넘파이 배열 준비
