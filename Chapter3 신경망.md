@@ -69,7 +69,7 @@
   import matplotlib.pylab as plt
   
   def step_function(x):
-      return np.array(x > 0, dtype = np.int)
+      return np.array(x > 0, dtype = np.int) # x의 원소가 0보다 크면 1, 작으면 0 리턴
   
   x = np.arange(-5.0, 5.0, 0.1)
   y = step_function(x)
@@ -106,6 +106,24 @@
 - '매끄러움'의 차이 - 계단 함수는 0또는 1이지만 시그모이드 함수는 연속적인 값이 나타남
 - 비슷한 점 - 둘다 입력이 작을 때의 출력은 0에 가깝고(혹은 0), 입력이 커지면 출력이 1에 가까워지는(혹은 1) 구조
 
+##### matplotlib 이용하기
+
+- 정사각형 그리기
+
+  ```python
+  import matplotlib.pylab as plt
+  import numpy as np
+  
+  #(1,1) -> (-1,1) -> (-1,-1) -> (1,-1) -> (1,1)
+  x = np.array([1,-1,-1,1,1])
+  y = np.array([1,1,-1,-1,1])
+  plt.plot(x,y)
+  ```
+
+  <img src="C:\Users\a9681\AppData\Roaming\Typora\typora-user-images\image-20220114233103976.png" alt="image-20220114233103976" style="zoom:40%;" />
+
+
+
 ------
 
 #### 비선형 함수
@@ -121,9 +139,9 @@
 
 ##### ReLU함수
 
-- 시그모이드보다 최근엔 **ReLu** 함수 
+- 시그모이드보다 최근엔 **ReLu** 함수를 주로 사용함
 
-- <img src="https://machinelearningmastery.com/wp-content/uploads/2018/10/Line-Plot-of-Rectified-Linear-Activation-for-Negative-and-Positive-Inputs.png" alt="A Gentle Introduction to the Rectified Linear Unit (ReLU)" style="zoom: 33%;" />
+- <img src="https://machinelearningmastery.com/wp-content/uploads/2018/10/Line-Plot-of-Rectified-Linear-Activation-for-Negative-and-Positive-Inputs.png" alt="A Gentle Introduction to the Rectified Linear Unit (ReLU)" style="zoom: 28%;" />
 
 - <img src="C:\Users\a9681\AppData\Roaming\Typora\typora-user-images\image-20211231171830798.png" alt="image-20211231171830798" style="zoom:67%;" />
 
@@ -714,4 +732,19 @@ print(y) # [0.31682708, 0.69627909]
   - 학습 속도 향상
   - 해석 용이
 - 현업에서는 데이터 전체의 분포를 고려해 전처리를 가함
+
+
+
+:memo:Quiz
+
+1. 다음은 계단 함수의 그래프를 그려주는 코드이다. 이 중 일부를 설명하시오
+
+   ```python
+   def step_function(x):
+   	return np.array(x >0 , dtype = np.int)
+   ```
+
+   :point_right: 배열 x의 각 원소가 0보다 크면 1을, 0보다 작으면 0을 리턴
+
+2. 
 
