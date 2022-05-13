@@ -29,8 +29,18 @@
    ```
    $ git remote -v
    ```
+   
+7. 기본 branch master에서 main으로 바꾸기
 
+   ```
+   $ git branch -M main
+   ```
 
+8. add, commit 후 main branch에 push하기
+
+   ```
+   $ git push -u origin main
+   ```
 
 ## 트러블 슈팅
 
