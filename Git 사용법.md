@@ -68,4 +68,11 @@
    - https://hyeo-noo.tistory.com/184 
    - 사이트 참고하깅
 
+#### non-fast-forward 에러
+- 원인
+   - 그램에서 올려놨던 파일들이 mac에는 없어서 생긴 오류
+
+- 해결방법
+   - git pull 해주면 됨
+   - https://velog.io/@rain98/깃허브-non-fast-forward-에러-해결하기
   
