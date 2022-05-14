@@ -58,5 +58,14 @@
   ```
   $ git push -u origin +master
   ```
+  
+  
+#### github push token 에러
+- 원인
+   - Mac에서는 github 연동할 때 token을 등록해줘야 했었다..!
+
+- 해결방법
+   - https://hyeo-noo.tistory.com/184 
+   - 사이트 참고하깅
 
   
