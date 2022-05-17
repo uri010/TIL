@@ -56,7 +56,7 @@
 - 해결방법
 
   ```
-  $ git push -u origin +master
+  $ git push -u origin +main
   ```
   
   
